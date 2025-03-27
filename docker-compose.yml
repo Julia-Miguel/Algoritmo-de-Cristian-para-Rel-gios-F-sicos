@@ -1,0 +1,54 @@
+version: '3'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "5000:5000"
+    networks:
+      - sync-net
+
+  cliente1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    command: ["python", "cliente.py", "-5"]  # Offset de -5 segundos
+    depends_on:
+      - server
+    networks:
+      - sync-net
+
+  cliente2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    command: ["python", "cliente.py", "0"]   # Offset de 0 segundos
+    depends_on:
+      - server
+    networks:
+      - sync-net
+
+  cliente3:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    command: ["python", "cliente.py", "10"]  # Offset de +10 segundos
+    depends_on:
+      - server
+    networks:
+      - sync-net
+
+  cliente4:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    command: ["python", "cliente.py", "5"]  # Offset de +10 segundos
+    depends_on:
+      - server
+    networks:
+      - sync-net
+
+networks:
+  sync-net:
+    driver: bridge
